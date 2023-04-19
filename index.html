@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dongle:wght@300&family=Signika+Negative:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<style type="text/css">
+*{ padding:0; margin:0;
+box-sizing:border-box;}
+nav{width:100vw; background-color:#1a1919; position:sticky; top:0px; z-index:999;
+height:50px; display:flex; justify-content:center; align-items:center;}
+#search{height:40px; width:70%; border:none; letter-spacing:5px;
+ border-radius:40px; text-align:center; font-size:20px;}
+.material-symbols-outlined{font-size:80px; color:white;
+transform:rotate(80deg); user-select:none;}
+.container {height:100vh; width:100vw;
+display:flex; flex-wrap:wrap;}
+.box{margin:auto;cursor: pointer; margin-top: 10px; }
+.poster{width:200px; height:250px;}
+.details{height: 180px; padding: 4px; cursor: all-scroll;
+ overflow: hidden;}
+.details h2{ float:left;}
+.details span{float:right; font-weight:bold;
+font-size:20px; color:#edb928;}
+p{width:200px; clear:both; font-family:'Dongle', sans-serif;}
+h2{width: 160px; font-family: 'Signika Negative', sans-serif;}
+@media(max-width:980px) and (min-width:360px) {
+  nav{height: 100px;}
+  .box{margin-left: 200px;}
+  .details span{font-size: 30px;}
+  #search{height: 65px; width: 50vw; font-size: 30px;}
+    .container{flex-direction:rows;}
+    .poster {
+    width: 300px;
+    height: 400px;
+    margin-left: -150px;
+     }
+    h2{width: 400px; font-size: 45px;}
+    p{width: 100%; font-size: 35px;}
+    .details {
+    float: right;
+    margin-right: 53px;
+    width: 55vw;
+    margin-left: 22px;
+    height: 321px;
+    }
+}
+</style>
+</head>
+<body>
+<nav>
+<span class="material-symbols-outlined">
+search
+</span>
+<input id="search" placeholder="Search Movie..." >
+</nav>
+<div class="container" >
+
+</div>
+
+<script type="text/javascript">
+const APIURL = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=04c35731a5ee918f014970082a0088b1&page=1";
+const IMGPATH = "https://image.tmdb.org/t/p/w1280";
+const SEARCHAPI = "https://api.themoviedb.org/3/search/movie?&api_key=04c35731a5ee918f014970082a0088b1&query=";
+    
+const movieBox= document.querySelector('.container');
+const getMovies=async(api)=>{
+  const response= await fetch(api)
+  const data = await response.json()
+  console.log(data.results)
+  showMovies(data.results)
+}
+
+const showMovies=(data)=>{
+  movieBox.innerHTML=""
+  data.forEach(
+    (item)=>{
+    console.log(item)
+      const box = document.createElement('div')
+      box.classList.add('box') 
+      box.innerHTML=`
+        <img src="${IMGPATH + item.poster_path}"  class="poster">
+        <div class="details" >
+        <h2>${item.title}</h2>
+        <span>${item.vote_average}</span>
+        <p align="justify">${item.overview}</p>
+        </div>
+      `;
+        movieBox.appendChild(box)
+    }
+  )
+}
+document.getElementById("search").addEventListener("keyup",
+    function(event){
+      console.log(event.target.value)
+      if (event.target.value != "") {
+        getMovies(SEARCHAPI + event.target.value)
+      }
+      else{
+        getMovies(APIURL)
+      }
+    }
+)
+getMovies(APIURL)
+</script>
+</body>
+</html>
